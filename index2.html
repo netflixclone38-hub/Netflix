@@ -308,8 +308,12 @@
             z-index: 10000;
         }
 
-        .section:first-of-type {
-            padding-top: 160px; /* Espace agrandi significativement pour séparer des boutons Hero */
+        /* 
+           Cible UNIQUEMENT la section qui suit directement le Hero.
+           Cela crée l'espace entre les boutons du Hero et le premier titre de catégorie.
+        */
+        .hero + .section {
+            padding-top: 100px;
         }
 
         .section-title {
@@ -879,8 +883,9 @@
                 margin-bottom: 5px;
             }
             
-            .section:first-of-type {
-                padding-top: 90px; /* Espace agrandi pour mobile */
+            /* Ajustement pour mobile du padding sous le hero */
+            .hero + .section {
+                padding-top: 40px; 
             }
 
             .section-title {
