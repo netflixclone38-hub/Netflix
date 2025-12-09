@@ -219,14 +219,51 @@
             padding-top: 70px;
         }
 
-        .hero-video {
+        .hero-video-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
             z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .hero-video-container iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw; /* Given a 16:9 aspect ratio, 100vw width means 56.25vw height */
+            min-height: 100vh;
+            min-width: 177.77vh; /* Given a 16:9 aspect ratio, 100vh height means 177.77vh width */
+            transform: translate(-50%, -50%) scale(1.3); /* Scale up to ensure coverage */
+            pointer-events: none;
+            border: none;
+        }
+        
+        .hero-mute-btn {
+            position: absolute;
+            right: 4%;
+            bottom: 35%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        
+        .hero-mute-btn:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
         }
 
         .hero::after {
@@ -239,6 +276,7 @@
             background: linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 50%, rgba(0,0,0,0.8) 100%),
                         linear-gradient(to top, rgba(20,20,20,1) 0%, transparent 60%);
             z-index: 1;
+            pointer-events: none;
         }
 
         .hero-content {
@@ -309,11 +347,14 @@
         }
 
         /* 
-           Cible UNIQUEMENT la section qui suit directement le Hero.
-           Cela crée l'espace entre les boutons du Hero et le premier titre de catégorie.
+           Ajustement de l'espace.
+           Remonter d'environ 3cm (approx 115px).
+           On utilise margin-top négatif pour tirer la section vers le haut
+           dans la zone de recouvrement du hero.
         */
         .hero + .section {
-            padding-top: 100px;
+            margin-top: -115px;
+            padding-top: 0;
         }
 
         .section-title {
@@ -477,7 +518,7 @@
         }
 
         .card-title {
-            display: none; /* Hide titles everywhere initially */
+            display: none; /* Toujours caché selon la demande */
         }
 
         .loading {
@@ -551,7 +592,70 @@
             border: none;
         }
 
-        /* Info Modal Styles (kept same as before) */
+        .search-results-page {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #141414;
+            z-index: 999;
+            overflow-y: auto;
+            padding-top: 80px;
+        }
+
+        .search-results-page.show {
+            display: block;
+        }
+
+        .search-results-container {
+            padding: 40px 4%;
+        }
+
+        .search-results-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 15px;
+        }
+
+        .search-card {
+            position: relative;
+            height: 130px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            background: #2a2a2a;
+            transition: transform 0.3s ease;
+        }
+
+        .search-card:hover {
+            transform: scale(1.05);
+        }
+
+        .search-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-card-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 10px 10px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         .info-modal {
             display: none;
             position: fixed;
@@ -755,110 +859,62 @@
             color: #777;
         }
 
-        .search-results-page {
+        .my-list-page {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #141414;
-            z-index: 999;
-            overflow-y: auto;
             padding-top: 80px;
+            min-height: 100vh;
         }
 
-        .search-results-page.show {
+        .my-list-page.show {
             display: block;
         }
 
-        .search-results-container {
+        .my-list-container {
             padding: 40px 4%;
         }
 
-        .search-results-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 30px;
+        .my-list-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 40px;
         }
 
-        .search-results-grid {
+        .my-list-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 15px;
         }
 
-        .search-card {
-            position: relative;
-            height: 130px;
-            border-radius: 6px;
-            overflow: hidden;
-            cursor: pointer;
-            background: #2a2a2a;
-            transition: transform 0.3s ease;
+        .my-list-empty {
+            text-align: center;
+            padding: 100px 20px;
+            font-size: 1.5rem;
+            color: #808080;
         }
 
-        .search-card:hover {
-            transform: scale(1.05);
-        }
-
-        .search-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .search-card-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px 10px 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* Mobile specific logic */
-        .bottom-nav {
-            display: none;
-        }
-
+        /* Mobile specific styles (portrait optimized) */
         @media (max-width: 768px) {
-            body {
-                padding-bottom: 60px; /* Space for bottom nav */
-            }
-
             .nav-links {
                 display: none;
-            }
-
-            .nav-right {
-                gap: 15px;
-            }
-
-            .logo {
-                font-size: 2rem;
             }
 
             .mobile-header-filters {
                 display: flex;
             }
 
-            .hero {
-                height: 80vh;
-                margin-bottom: -50px;
-                padding-top: 0;
-                align-items: flex-end;
-                padding-bottom: 60px;
+            .logo {
+                font-size: 1.8rem;
             }
 
-            .hero-content {
-                width: 100%;
-                text-align: center;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+            .hero {
+                height: 80vh;
+                margin-bottom: -100px;
+            }
+
+            /* Remonter la section sur mobile aussi */
+            .hero + .section {
+                margin-top: -60px;
+                padding-top: 0;
             }
 
             .hero-title {
@@ -866,26 +922,23 @@
             }
 
             .hero-description {
-                display: none;
-            }
-
-            .hero-buttons {
-                margin-bottom: 10px;
+                font-size: 1rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
             }
 
             .btn {
-                padding: 8px 20px;
-                font-size: 1rem;
+                padding: 10px 20px;
+                font-size: 0.95rem;
             }
 
-            .section {
-                padding: 5px 4%; /* Reduced padding on mobile */
-                margin-bottom: 5px;
-            }
-            
-            /* Ajustement pour mobile du padding sous le hero */
-            .hero + .section {
-                padding-top: 40px; 
+            /* Mobile Portrait Cards */
+            .card {
+                min-width: 110px;
+                height: 160px; /* Portrait ratio */
+                border-radius: 4px;
             }
 
             .section-title {
@@ -893,72 +946,12 @@
                 margin-bottom: 8px;
             }
 
-            .carousel-container {
-                gap: 8px;
-                padding-bottom: 0;
+            .video-modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
             }
 
-            /* Portrait cards on mobile */
-            .card {
-                min-width: 110px;
-                height: 160px;
-            }
-
-            .card-title {
-                display: none; /* Hide title on mobile */
-            }
-            
-            .card-preview-title {
-                display: none; /* Hide preview title on mobile just in case */
-            }
-
-            /* Bottom Nav */
-            .bottom-nav {
-                display: flex;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 50px;
-                background: #121212;
-                border-top: 1px solid #333;
-                z-index: 2000;
-                justify-content: space-around;
-                align-items: center;
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-
-            .nav-item {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                color: #808080;
-                font-size: 10px;
-                text-decoration: none;
-                gap: 4px;
-                flex: 1;
-            }
-
-            .nav-item.active {
-                color: #fff;
-            }
-
-            .nav-item svg {
-                width: 22px;
-                height: 22px;
-                fill: currentColor;
-            }
-
-            .search-results-grid {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            }
-            
-            .search-card {
-                 height: 160px;
-            }
-
-            /* Adjust modals for mobile */
             .info-modal-details {
                 grid-template-columns: 1fr;
             }
@@ -970,6 +963,95 @@
             .info-modal-body {
                 padding: 20px;
             }
+
+            .info-modal-hero-content {
+                left: 24px;
+                right: 24px;
+                bottom: 40px;
+            }
+
+            .info-modal-title {
+                font-size: 2rem;
+            }
+
+            .carousel-container {
+                gap: 8px;
+                padding-right: 2%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+            }
+
+            .card {
+                scroll-snap-align: start;
+            }
+            
+            /* Hide hover effects on mobile */
+            .card.show-preview {
+                transform: none;
+                z-index: 1;
+            }
+            
+            .card-preview {
+                display: none;
+            }
+
+            .search-results-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .search-card {
+                height: 160px; /* Portrait in search too */
+            }
+
+            .my-list-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+        }
+
+        /* Bottom Navigation for Mobile */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #121212;
+            border-top: 1px solid #333;
+            padding: 10px 0;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #808080;
+            font-size: 10px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .bottom-nav-item.active {
+            color: #fff;
+        }
+
+        .bottom-nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -978,11 +1060,11 @@
         <nav>
             <div class="logo" onclick="navigateToHome()">NETFLIX</div>
             <div class="nav-links">
-                <a onclick="navigateToHome()" class="active">Accueil</a>
-                <a>Séries</a>
-                <a>Films</a>
-                <a>Nouveautés</a>
-                <a>Ma liste</a>
+                <a onclick="navigateToHome()" class="nav-link active" data-page="home">Accueil</a>
+                <a onclick="navigateToPage('series')" class="nav-link">Séries</a>
+                <a onclick="navigateToPage('films')" class="nav-link">Films</a>
+                <a onclick="navigateToPage('nouveautes')" class="nav-link">Nouveautés les plus regardées</a>
+                <a onclick="navigateToMyList()" class="nav-link" data-page="maliste">Ma liste</a>
             </div>
             <div class="nav-right">
                 <div class="search-container">
@@ -998,7 +1080,7 @@
                     <div class="notification-badge">2</div>
                 </div>
                 <div class="profile">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png" alt="Profile">
+                    <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%23e50914' width='32' height='32'/><circle fill='%23fff' cx='16' cy='12' r='5'/><path fill='%23fff' d='M16 18c-5 0-9 3-9 6v2h18v-2c0-3-4-6-9-6z'/></svg>" alt="Profile">
                 </div>
             </div>
         </nav>
@@ -1007,13 +1089,20 @@
         <div class="mobile-header-filters">
             <div class="filter-pill">Séries</div>
             <div class="filter-pill">Films</div>
-            <div class="filter-pill">Catégories ▼</div>
+            <div class="filter-pill">Catégories</div>
         </div>
     </header>
 
     <div id="mainPage">
         <div class="hero" id="hero">
-            <video class="hero-video" id="heroVideo" autoplay muted loop playsinline></video>
+            <div class="hero-video-container" id="heroVideoContainer">
+                <!-- Video iframe will be injected here -->
+            </div>
+            <button class="hero-mute-btn" id="heroMuteBtn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
             <div class="hero-content">
                 <h1 class="hero-title" id="heroTitle">Chargement...</h1>
                 <p class="hero-description" id="heroDescription">Chargement de la description...</p>
@@ -1040,7 +1129,7 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">Tendances actuelles</h2>
+            <h2 class="section-title">Les plus gros succès</h2>
             <div class="carousel">
                 <div class="carousel-container" id="carousel2">
                     <div class="loading">Chargement des films...</div>
@@ -1049,7 +1138,7 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">À voir absolument</h2>
+            <h2 class="section-title">À voir et à revoir</h2>
             <div class="carousel">
                 <div class="carousel-container" id="carousel3">
                     <div class="loading">Chargement des films...</div>
@@ -1060,11 +1149,40 @@
         <div id="dynamicSections"></div>
     </div>
 
+    <div class="my-list-page" id="myListPage">
+        <div class="my-list-container">
+            <h1 class="my-list-title">Ma liste</h1>
+            <div class="my-list-grid" id="myListGrid">
+                <div class="my-list-empty">Votre liste est vide. Ajoutez des films et séries en cliquant sur le bouton +</div>
+            </div>
+        </div>
+    </div>
+
     <div class="search-results-page" id="searchResultsPage">
         <div class="search-results-container">
             <h2 class="search-results-title" id="searchResultsTitle">Résultats de recherche</h2>
             <div class="search-results-grid" id="searchResultsGrid"></div>
         </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+        <button class="bottom-nav-item active" onclick="navigateToHome()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Accueil</span>
+        </button>
+        <button class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6h-7.59l3.29-3.29L16 2l-4 4-4-4-.71.71L10.59 6H3a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8a2 2 0 0 0-2-2zm0 14H3V8h18v12zM9 10v8l7-4z"/></svg>
+            <span>Jeux</span>
+        </button>
+        <button class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 10H6v-2h8v2zm4-4H6v-2h12v2z"/></svg>
+            <span>Nouveautés</span>
+        </button>
+        <button class="bottom-nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Mon Netflix</span>
+        </button>
     </div>
 
     <div class="video-modal" id="videoModal">
@@ -1078,7 +1196,6 @@
         </div>
     </div>
 
-    <!-- Info Modal -->
     <div class="info-modal" id="infoModal">
         <div class="info-modal-content">
             <button class="info-modal-close" id="closeInfoModal">✕</button>
@@ -1097,6 +1214,11 @@
                                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                             </svg>
                         </button>
+                        <button class="info-modal-btn icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1110,7 +1232,7 @@
                             <span class="info-modal-quality">HD</span>
                         </div>
                         <div class="info-modal-description" id="infoModalDescription">
-                            Description...
+                            Description du film ou de la série...
                         </div>
                     </div>
                     <div class="info-modal-sidebar">
@@ -1120,28 +1242,12 @@
                         </div>
                         <div class="info-modal-sidebar-item">
                             <span class="info-modal-label">Genres : </span>
-                            <span id="infoModalGenres">Genres...</span>
+                            <span id="infoModalGenres">Action, Aventure</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Mobile Bottom Navigation -->
-    <div class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="navigateToHome()">
-            <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Accueil</span>
-        </a>
-        <a href="#" class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14zM8 15c0-1.66 1.34-3 3-3 .35 0 .69.07 1 .18V6h5v2h-3v7.03A3.003 3.003 0 0 1 11 18c-1.66 0-3-1.34-3-3z"/></svg>
-            <span>Nouveautés</span>
-        </a>
-        <a href="#" class="nav-item">
-            <svg viewBox="0 0 24 24"><path d="M4 10h12v2H4zm0-4h12v2H4zm0 8h8v2H4zm10 0v6l5-3z"/></svg>
-            <span>Ma liste</span>
-        </a>
     </div>
 
     <script>
@@ -1157,12 +1263,35 @@
         let currentHeroApiData = null;
         let allMoviesWithApiData = [];
         let myList = [];
-        
-        // Track displayed movies to prevent duplicates
-        const renderedMovieIds = new Set();
-        let currentMovieDataIndex = 0;
-
+        let displayedMovieIds = new Set();
         const MOVIES_PER_ROW = 6;
+        let heroIsMuted = false; // Par défaut son activé (selon demande), mais navigateur peut bloquer
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function loadMyListFromStorage() {
+            try {
+                const saved = localStorage.getItem('netflixMyList');
+                if (saved) {
+                    myList = JSON.parse(saved);
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement de Ma Liste:', error);
+            }
+        }
+
+        function saveMyListToStorage() {
+            try {
+                localStorage.setItem('netflixMyList', JSON.stringify(myList));
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde de Ma Liste:', error);
+            }
+        }
 
         function isMobileDevice() {
             return window.innerWidth <= 768;
@@ -1172,16 +1301,10 @@
             try {
                 const response = await fetch('movies.json');
                 moviesData = await response.json();
-                shuffleArray(moviesData); // Shuffle the movies randomly
+                shuffleArray(moviesData); // Mélange aléatoire
+                console.log('Données chargées et mélangées:', moviesData);
             } catch (error) {
                 console.error('Erreur lors du chargement du fichier JSON:', error);
-            }
-        }
-        
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
@@ -1217,21 +1340,28 @@
         function openVideoModal(movieData, apiMovieData) {
             const modal = document.getElementById('videoModal');
             const iframeContainer = document.getElementById('iframeContainer');
-            iframeContainer.innerHTML = movieData.iframe || '<p style="color: #fff; text-align: center; padding: 50px;">Vidéo non disponible</p>';
+
+            iframeContainer.innerHTML = movieData.iframe || '<p style="color: #fff; text-align: center; padding: 50px; font-size: 1.5rem;">Vidéo non disponible</p>';
+
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
+            
+            // Si le hero jouait, on peut le mettre en pause ou mute (optionnel)
         }
 
         function closeVideoModal() {
             const modal = document.getElementById('videoModal');
             const iframeContainer = document.getElementById('iframeContainer');
+            
             modal.classList.remove('show');
             document.body.style.overflow = 'auto';
+            
             iframeContainer.innerHTML = '';
         }
 
         async function openInfoModal(movieData, apiMovieData) {
             const modal = document.getElementById('infoModal');
+            
             let details = apiMovieData;
             if (apiMovieData && apiMovieData.id) {
                 const type = apiMovieData.media_type || (apiMovieData.first_air_date ? 'tv' : 'movie');
@@ -1242,6 +1372,7 @@
                 ? `${API_CONFIG.backdropBaseUrl}${details.backdrop_path}`
                 : '';
             document.getElementById('infoModalHero').style.backgroundImage = `url('${backdropUrl}')`;
+
             document.getElementById('infoModalTitle').textContent = details?.title || details?.name || movieData?.title || 'Titre non disponible';
 
             const year = details?.release_date?.split('-')[0] || details?.first_air_date?.split('-')[0] || '2025';
@@ -1255,14 +1386,28 @@
                 seasonsElement.style.display = 'none';
             }
 
-            document.getElementById('infoModalDescription').textContent = details?.overview || 'Description non disponible.';
+            document.getElementById('infoModalDescription').textContent = 
+                details?.overview || 'Description non disponible.';
+
             const cast = details?.credits?.cast?.slice(0, 3).map(actor => actor.name).join(', ') || 'Non disponible';
             document.getElementById('infoModalCast').textContent = cast;
+
             const genres = details?.genres?.map(g => g.name).join(', ') || 'Action, Aventure';
             document.getElementById('infoModalGenres').textContent = genres;
 
             modal.dataset.movieData = JSON.stringify(movieData || {});
-            
+            modal.dataset.apiData = JSON.stringify(details || {});
+
+            const addBtn = document.getElementById('addToListBtn');
+            const iconSvg = addBtn.querySelector('.icon-svg');
+            if (isInMyList(details.id)) {
+                addBtn.classList.add('added');
+                iconSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+            } else {
+                addBtn.classList.remove('added');
+                iconSvg.innerHTML = '<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>';
+            }
+
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
         }
@@ -1273,15 +1418,114 @@
             document.body.style.overflow = 'auto';
         }
 
+        function addToMyList(movieData, apiData) {
+            const movieId = apiData.id;
+            const existingIndex = myList.findIndex(item => item.apiData.id === movieId);
+            
+            if (existingIndex === -1) {
+                myList.push({ movieData, apiData });
+                saveMyListToStorage();
+                updateMyListPage();
+                
+                const modal = document.getElementById('infoModal');
+                if (modal.classList.contains('show')) {
+                    const addBtn = document.getElementById('addToListBtn');
+                    const iconSvg = addBtn.querySelector('.icon-svg');
+                    addBtn.classList.add('added');
+                    iconSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+                }
+            }
+        }
+
+        function removeFromMyList(movieId) {
+            const index = myList.findIndex(item => item.apiData.id === movieId);
+            if (index !== -1) {
+                myList.splice(index, 1);
+                saveMyListToStorage();
+                updateMyListPage();
+            }
+        }
+
+        function updateMyListPage() {
+            const myListGrid = document.getElementById('myListGrid');
+            if (!myListGrid) return;
+            
+            myListGrid.innerHTML = '';
+            
+            if (myList.length === 0) {
+                myListGrid.innerHTML = '<div class="my-list-empty">Votre liste est vide. Ajoutez des films et séries en cliquant sur le bouton +</div>';
+                return;
+            }
+
+            myList.forEach(item => {
+                const card = createMyListCard(item.movieData, item.apiData);
+                myListGrid.appendChild(card);
+            });
+        }
+
+        function createMyListCard(movieData, apiData) {
+            const card = document.createElement('div');
+            card.className = 'search-card';
+            
+            const movieTitle = apiData.title || apiData.name;
+            const imgPath = isMobileDevice() ? apiData.poster_path : apiData.backdrop_path;
+            const imgUrl = imgPath ? `${API_CONFIG.imageBaseUrl}${imgPath}` : '';
+            
+            card.innerHTML = `
+                <img src="${imgUrl}" alt="${movieTitle}" onerror="this.style.display='none';">
+                <div class="search-card-title" style="display:none;">${movieTitle}</div>
+            `;
+            
+            card.addEventListener('click', () => {
+                openInfoModal(movieData, apiData);
+            });
+            
+            return card;
+        }
+
+        function toggleHeroMute() {
+            heroIsMuted = !heroIsMuted;
+            const btn = document.getElementById('heroMuteBtn');
+            const container = document.getElementById('heroVideoContainer');
+            const iframe = container.querySelector('iframe');
+            
+            // Mise à jour de l'icône
+            if (heroIsMuted) {
+                btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
+            } else {
+                btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+            }
+
+            // Pour recharger l'iframe avec le nouveau paramètre mute
+            // C'est la méthode la plus fiable sans API complexe
+            if (iframe && currentHeroMovie) {
+                const src = iframe.src;
+                // Simple replace regex
+                let newSrc;
+                if (src.includes('mute=1')) {
+                    newSrc = src.replace('mute=1', 'mute=0');
+                } else if (src.includes('mute=0')) {
+                    newSrc = src.replace('mute=0', 'mute=1');
+                } else {
+                    // Fallback
+                    newSrc = src + (heroIsMuted ? '&mute=1' : '&mute=0');
+                }
+                iframe.src = newSrc;
+            }
+        }
+
         async function loadHeroContent() {
             if (moviesData.length === 0) return;
+            
             const randomMovie = moviesData[Math.floor(Math.random() * moviesData.length)];
             currentHeroMovie = randomMovie;
+            
             const movie = await searchMovie(randomMovie.title);
             currentHeroApiData = movie;
             
             if (movie) {
                 document.getElementById('heroTitle').textContent = movie.title || movie.name;
+                
                 let description = movie.overview || 'Description non disponible.';
                 const words = description.split(' ');
                 if (words.length > 20) {
@@ -1289,11 +1533,37 @@
                 }
                 document.getElementById('heroDescription').textContent = description;
                 
-                if (movie.backdrop_path) {
-                    const heroVideo = document.getElementById('heroVideo');
-                    heroVideo.outerHTML = `<div class="hero-video" style="background-image: url('${API_CONFIG.backdropBaseUrl}${movie.backdrop_path}'); background-size: cover; background-position: center;"></div>`;
+                // Gestion de la vidéo d'arrière plan
+                const container = document.getElementById('heroVideoContainer');
+                if (randomMovie.iframe) {
+                    // Extraction de l'URL src de l'iframe JSON
+                    const match = randomMovie.iframe.match(/src="([^"]+)"/);
+                    if (match && match[1]) {
+                        let src = match[1];
+                        // Ajout paramètres YouTube/Embed pour autoplay et mute
+                        // On force autoplay=1. mute=0 si activé (défaut false dans code, true dans UI pour start)
+                        // Attention: Autoplay avec son est bloqué par les navigateurs. 
+                        // On tente mute=0, si ça bloque, l'utilisateur a le bouton.
+                        const separator = src.includes('?') ? '&' : '?';
+                        // astuce: controls=0, showinfo=0, loop=1, playlist pour boucler
+                        src += `${separator}autoplay=1&mute=${heroIsMuted ? '1' : '0'}&controls=0&showinfo=0&rel=0&loop=1`;
+                        
+                        // Si c'est YouTube, il faut playlist=ID pour que loop fonctionne
+                        const ytMatch = src.match(/embed\/([a-zA-Z0-9_-]+)/);
+                        if (ytMatch && ytMatch[1]) {
+                            src += `&playlist=${ytMatch[1]}`;
+                        }
+                        
+                        container.innerHTML = `<iframe src="${src}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                    }
+                } else if (movie.backdrop_path) {
+                     // Fallback image si pas d'iframe
+                     container.innerHTML = `<img src="${API_CONFIG.backdropBaseUrl}${movie.backdrop_path}" style="width:100%;height:100%;object-fit:cover;">`;
                 }
             }
+            
+            // Setup mute button
+            document.getElementById('heroMuteBtn').addEventListener('click', toggleHeroMute);
         }
 
         function createCard(movieData, apiData) {
@@ -1301,19 +1571,15 @@
             card.className = 'card';
             
             const movieTitle = apiData.title || apiData.name;
-            
-            let imgPath;
-            if (isMobileDevice()) {
-                imgPath = apiData.poster_path ? apiData.poster_path : apiData.backdrop_path;
-            } else {
-                imgPath = apiData.backdrop_path ? apiData.backdrop_path : apiData.poster_path;
-            }
-            
+            const imgPath = isMobileDevice() ? apiData.poster_path : apiData.backdrop_path;
             const imgUrl = imgPath ? `${API_CONFIG.imageBaseUrl}${imgPath}` : '';
+            const movieId = apiData.id;
+            const inList = isInMyList(movieId);
             
             card.innerHTML = `
                 <div class="card-image-container" style="position: relative; width: 100%; height: 100%;">
-                    <img src="${imgUrl}" alt="${movieTitle}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none';">
+                    <img src="${imgUrl}" alt="${movieTitle}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'; this.parentElement.querySelector('.card-placeholder').style.display='flex';">
+                    <div class="card-placeholder" style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #2a2a2a; align-items: center; justify-content: center; text-align: center; padding: 20px; font-size: 16px; font-weight: 600; color: #fff;">${movieTitle}</div>
                 </div>
                 <div class="card-title">${movieTitle}</div>
                 <div class="card-preview">
@@ -1322,29 +1588,57 @@
                         <div class="card-preview-title">${movieTitle}</div>
                         <div class="card-preview-buttons">
                             <button class="card-preview-btn play" data-action="play">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#000">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
                             </button>
-                            <button class="card-preview-btn" data-action="info">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+                            <button class="card-preview-btn ${inList ? 'added' : ''}" data-action="add" data-movie-id="${movieId}">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" class="add-icon-svg">
+                                    ${inList ? '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>' : '<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>'}
+                                </svg>
+                            </button>
+                            <button class="card-preview-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                </svg>
+                            </button>
+                            <button class="card-preview-btn info-btn" style="margin-left: auto;" data-action="info">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff">
+                                    <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/>
+                                </svg>
                             </button>
                         </div>
                         <div class="card-preview-info">
                             <span>Correspondance à 98%</span>
+                        </div>
+                        <div class="card-preview-genres">
+                            <span>Action</span>
+                            <span>Aventure</span>
+                            <span>Science-fiction</span>
                         </div>
                     </div>
                 </div>
             `;
             
             let hoverTimer = null;
+            let isHovering = false;
+            
             card.addEventListener('mouseenter', function() {
                 if (!isMobileDevice()) {
+                    isHovering = true;
                     card.classList.add('show-preview');
                 }
             });
             
             card.addEventListener('mouseleave', function() {
-                if (hoverTimer) clearTimeout(hoverTimer);
-                card.classList.remove('show-preview');
+                if (!isMobileDevice()) {
+                    isHovering = false;
+                    if (hoverTimer) {
+                        clearTimeout(hoverTimer);
+                        hoverTimer = null;
+                    }
+                    card.classList.remove('show-preview');
+                }
             });
 
             card.addEventListener('click', function(e) {
@@ -1357,6 +1651,21 @@
                     } else if (action === 'info') {
                         e.stopPropagation();
                         openInfoModal(movieData, apiData);
+                    } else if (action === 'add') {
+                        e.stopPropagation();
+                        const btn = target;
+                        const iconSvg = btn.querySelector('.add-icon-svg');
+                        const movieId = parseInt(btn.dataset.movieId);
+                        
+                        if (isInMyList(movieId)) {
+                            removeFromMyList(movieId);
+                            btn.classList.remove('added');
+                            iconSvg.innerHTML = '<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>';
+                        } else {
+                            addToMyList(movieData, apiData);
+                            btn.classList.add('added');
+                            iconSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+                        }
                     }
                 } else {
                     openVideoModal(movieData, apiData);
@@ -1366,87 +1675,94 @@
             return card;
         }
 
-        // Updated Load Carousel to prevent duplicates
-        async function loadCarousel(carouselId, count = MOVIES_PER_ROW) {
+        async function loadCarousel(carouselId, startIndex = 0, count = MOVIES_PER_ROW) {
             const container = document.getElementById(carouselId);
             if (!container) return;
             
             container.innerHTML = '';
-            let loadedMovies = 0;
             
-            // Loop until we have enough movies or we run out of source data
-            while (loadedMovies < count && currentMovieDataIndex < moviesData.length) {
-                const movieData = moviesData[currentMovieDataIndex];
-                
-                // Only search and render if we haven't seen this movieData (assumes JSON is somewhat clean, but let's rely on TMDB ID for true duplicate check)
+            let loadedMovies = 0;
+            let currentIndex = startIndex;
+            
+            // Loop global sur le tableau mélangé pour éviter les doublons
+            // On utilise le curseur global currentIndex
+            
+            while (loadedMovies < count && currentIndex < moviesData.length) {
+                const movieData = moviesData[currentIndex];
                 const movie = await searchMovie(movieData.title);
                 
-                if (movie && !renderedMovieIds.has(movie.id)) {
-                    renderedMovieIds.add(movie.id);
-                    allMoviesWithApiData.push({ movieData, apiData: movie });
-                    const card = createCard(movieData, movie);
-                    container.appendChild(card);
-                    loadedMovies++;
+                if (movie) {
+                    // Check if already displayed to avoid duplicates
+                    if (!displayedMovieIds.has(movie.id)) {
+                        displayedMovieIds.add(movie.id);
+                        allMoviesWithApiData.push({ movieData, apiData: movie });
+                        const card = createCard(movieData, movie);
+                        container.appendChild(card);
+                        loadedMovies++;
+                    }
                 }
                 
-                // Move to next movie in source list regardless of whether it was added (to avoid infinite loops on duplicates)
-                currentMovieDataIndex++;
+                currentIndex++;
             }
+            return currentIndex;
         }
 
         async function loadAllMovies() {
-            // Sequential loading ensures no index math errors
-            await loadCarousel('carousel1', MOVIES_PER_ROW);
-            await loadCarousel('carousel2', MOVIES_PER_ROW);
-            await loadCarousel('carousel3', MOVIES_PER_ROW);
+            let currentIndex = 0;
+            
+            currentIndex = await loadCarousel('carousel1', currentIndex, MOVIES_PER_ROW);
+            currentIndex = await loadCarousel('carousel2', currentIndex, MOVIES_PER_ROW);
+            currentIndex = await loadCarousel('carousel3', currentIndex, MOVIES_PER_ROW);
 
-            // Dynamically load remaining movies in new sections if any left
-            if (currentMovieDataIndex < moviesData.length) {
+            // Dynamically load remaining movies
+            // On continue à partir de currentIndex
+            
+            const remainingMovies = moviesData.length - currentIndex; // Estimation
+
+            if (remainingMovies > 0) {
                 const dynamicSections = document.getElementById('dynamicSections');
                 
-                // Generic titles to avoid mismatching content
-                const sectionTitles = [
-                    'Notre sélection pour vous', 
-                    'Les plus gros succès', 
-                    'Pépites à découvrir', 
-                    'Tendances internationales', 
-                    'À voir et à revoir', 
-                    'Films primés', 
-                    'Adorés par la critique',
-                    'Suspense et frissons',
-                    'Émotions fortes',
-                    'Voyage et évasion'
-                ];
+                // On peut créer autant de sections que nécessaire jusqu'à épuisement
+                // ou limiter. Faisons une boucle simple.
                 let sectionIndex = 0;
+                
+                const sectionTitles = [
+                    'Notre sélection pour vous',
+                    'Pépites à découvrir',
+                    'Les incontournables',
+                    'Films d\'action et d\'aventure',
+                    'Comédies à succès',
+                    'Pour toute la famille',
+                    'Frissons garantis',
+                    'Drames émouvants',
+                    'Science-fiction et Fantastique',
+                    'Documentaires passionnants'
+                ];
 
-                while (currentMovieDataIndex < moviesData.length) {
-                    // Check if we have processed all movies, though the loop condition handles it.
-                    // Create section
+                while (currentIndex < moviesData.length && sectionIndex < sectionTitles.length) {
                     const section = document.createElement('div');
                     section.className = 'section';
-                    const title = sectionTitles[sectionIndex] || `Sélection ${sectionIndex + 4}`;
-                    const carouselId = `carousel${sectionIndex + 4}`;
+                    
+                    const title = sectionTitles[sectionIndex];
+                    const carouselId = `carouselDynamic${sectionIndex}`;
                     
                     section.innerHTML = `
                         <h2 class="section-title">${title}</h2>
                         <div class="carousel">
                             <div class="carousel-container" id="${carouselId}">
-                                <div class="loading">Chargement...</div>
+                                <div class="loading">Chargement des films...</div>
                             </div>
                         </div>
                     `;
+                    
                     dynamicSections.appendChild(section);
                     
-                    // Load into this new carousel
-                    await loadCarousel(carouselId, MOVIES_PER_ROW);
+                    currentIndex = await loadCarousel(carouselId, currentIndex, MOVIES_PER_ROW);
                     sectionIndex++;
-                    
-                    // Safety break to prevent infinite sections if API acts up
-                    if (sectionIndex > 20) break;
                 }
             }
         }
-        
+
         function displaySearchResults(searchTerm) {
             const resultsGrid = document.getElementById('searchResultsGrid');
             const resultsTitle = document.getElementById('searchResultsTitle');
@@ -1467,50 +1783,123 @@
 
             filteredMovies.forEach(item => {
                 const { movieData, apiData } = item;
-                const card = createCard(movieData, apiData);
-                card.classList.add('search-card'); 
+                const card = document.createElement('div');
+                card.className = 'search-card';
+                
+                const movieTitle = apiData.title || apiData.name;
+                const imgPath = isMobileDevice() ? apiData.poster_path : apiData.backdrop_path;
+                const imgUrl = imgPath ? `${API_CONFIG.imageBaseUrl}${imgPath}` : '';
+                
+                card.innerHTML = `
+                    <img src="${imgUrl}" alt="${movieTitle}" onerror="this.style.display='none';">
+                    <div class="search-card-title" style="display:none;">${movieTitle}</div>
+                `;
+                
+                card.addEventListener('click', () => {
+                    openInfoModal(movieData, apiData);
+                });
+                
                 resultsGrid.appendChild(card);
             });
         }
 
         function navigateToHome() {
             document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('myListPage').classList.remove('show');
             document.getElementById('searchResultsPage').classList.remove('show');
-            window.scrollTo(0,0);
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector('[data-page="home"]')?.classList.add('active');
+            
+            // Highlight bottom nav
+            document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.bottom-nav-item:first-child').classList.add('active');
         }
 
-        // Header Scroll
-        window.addEventListener('scroll', () => {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
+        function navigateToMyList() {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('myListPage').classList.add('show');
+            document.getElementById('searchResultsPage').classList.remove('show');
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector('[data-page="maliste"]')?.classList.add('active');
+            
+            updateMyListPage();
+        }
+
+        function navigateToPage(page) {
+            console.log('Navigation vers:', page);
+        }
+
+        async function init() {
+            await loadMoviesData();
+            await loadHeroContent();
+            await loadAllMovies();
+        }
+
+        document.getElementById('heroPlayBtn').addEventListener('click', function() {
+            if (currentHeroMovie) {
+                openVideoModal(currentHeroMovie, currentHeroApiData);
             }
         });
 
-        // Search Logic
+        document.getElementById('heroInfoBtn').addEventListener('click', function() {
+            if (currentHeroMovie) {
+                openInfoModal(currentHeroMovie, currentHeroApiData);
+            }
+        });
+
+        document.getElementById('infoModalPlayBtn').addEventListener('click', function() {
+            const modal = document.getElementById('infoModal');
+            const movieData = JSON.parse(modal.dataset.movieData || '{}');
+            closeInfoModal();
+            openVideoModal(movieData, null);
+        });
+
+        document.getElementById('addToListBtn').addEventListener('click', function() {
+            const modal = document.getElementById('infoModal');
+            const movieData = JSON.parse(modal.dataset.movieData || '{}');
+            const apiData = JSON.parse(modal.dataset.apiData || '{}');
+            
+            const btn = this;
+            const iconSvg = btn.querySelector('.icon-svg');
+            
+            if (isInMyList(apiData.id)) {
+                removeFromMyList(apiData.id);
+                btn.classList.remove('added');
+                iconSvg.innerHTML = '<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>';
+            } else {
+                addToMyList(movieData, apiData);
+                btn.classList.add('added');
+                iconSvg.innerHTML = '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>';
+            }
+        });
+
+        const header = document.getElementById('header');
+        const closeModalBtn = document.getElementById('closeModal');
+        const closeInfoModalBtn = document.getElementById('closeInfoModal');
+        const videoModal = document.getElementById('videoModal');
+        const infoModal = document.getElementById('infoModal');
         const searchIcon = document.getElementById('searchIcon');
         const searchBox = document.getElementById('searchBox');
         const searchInput = document.getElementById('searchInput');
         const searchResultsPage = document.getElementById('searchResultsPage');
         const mainPage = document.getElementById('mainPage');
 
-        searchIcon.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent document click from closing immediately
+        searchIcon.addEventListener('click', () => {
             searchBox.classList.toggle('active');
             if (searchBox.classList.contains('active')) {
                 searchInput.focus();
             }
         });
-        
-        // Close search if clicking outside
+
         document.addEventListener('click', (e) => {
             if (!searchIcon.contains(e.target) && !searchBox.contains(e.target)) {
                 if (searchInput.value === '') {
                     searchBox.classList.remove('active');
-                    if (searchResultsPage.classList.contains('show')) {
-                        searchResultsPage.classList.remove('show');
+                    searchResultsPage.classList.remove('show');
+                    const myListPage = document.getElementById('myListPage');
+                    if (!myListPage.classList.contains('show')) {
                         mainPage.style.display = 'block';
                     }
                 }
@@ -1522,29 +1911,80 @@
             
             if (searchTerm.length > 0) {
                 mainPage.style.display = 'none';
+                document.getElementById('myListPage').classList.remove('show');
                 searchResultsPage.classList.add('show');
                 displaySearchResults(searchTerm);
             } else {
                 searchResultsPage.classList.remove('show');
-                mainPage.style.display = 'block';
+                navigateToHome();
+            }
+        });
+        
+        if (window.scrollY === 0) {
+            header.classList.remove('scrolled');
+        }
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
             }
         });
 
-        // Handle Close Buttons
-        document.getElementById('closeModal').addEventListener('click', closeVideoModal);
-        document.getElementById('closeInfoModal').addEventListener('click', closeInfoModal);
-        document.getElementById('heroPlayBtn').addEventListener('click', function() {
-            if (currentHeroMovie) openVideoModal(currentHeroMovie, currentHeroApiData);
-        });
-        document.getElementById('heroInfoBtn').addEventListener('click', function() {
-            if (currentHeroMovie) openInfoModal(currentHeroMovie, currentHeroApiData);
+        closeModalBtn.addEventListener('click', closeVideoModal);
+        closeInfoModalBtn.addEventListener('click', closeInfoModal);
+        
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                closeVideoModal();
+            }
         });
 
-        async function init() {
-            await loadMoviesData();
-            await loadHeroContent();
-            await loadAllMovies();
-        }
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) {
+                closeInfoModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (videoModal.classList.contains('show')) {
+                    closeVideoModal();
+                }
+                if (infoModal.classList.contains('show')) {
+                    closeInfoModal();
+                }
+            }
+        });
+
+        document.querySelectorAll('.carousel-container').forEach(container => {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            container.addEventListener('mousedown', (e) => {
+                isDown = true;
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isDown = false;
+            });
+
+            container.addEventListener('mouseup', () => {
+                isDown = false;
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 2;
+                container.scrollLeft = scrollLeft - walk;
+            });
+        });
 
         init();
     </script>
