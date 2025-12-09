@@ -310,7 +310,7 @@
         }
 
         .section:first-of-type {
-            padding-top: 30px;
+            padding-top: 80px; /* Increased spacing as requested */
         }
 
         .section-title {
@@ -879,6 +879,10 @@
                 padding: 5px 4%; /* Reduced padding on mobile */
                 margin-bottom: 5px;
             }
+            
+            .section:first-of-type {
+                padding-top: 50px; /* Adjusted increased spacing for mobile */
+            }
 
             .section-title {
                 font-size: 1.1rem;
@@ -1023,7 +1027,7 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">Séries US pour ados à regarder sans modération</h2>
+            <h2 class="section-title">Sélectionnés pour vous</h2>
             <div class="carousel">
                 <div class="carousel-container" id="carousel1">
                     <div class="loading">Chargement des films...</div>
@@ -1041,7 +1045,7 @@
         </div>
 
         <div class="section">
-            <h2 class="section-title">Vous n'allez pas vous ennuyer</h2>
+            <h2 class="section-title">À voir absolument</h2>
             <div class="carousel">
                 <div class="carousel-container" id="carousel3">
                     <div class="loading">Chargement des films...</div>
@@ -1396,8 +1400,19 @@
             if (currentMovieDataIndex < moviesData.length) {
                 const dynamicSections = document.getElementById('dynamicSections');
                 
-                // Demo titles for extra sections
-                const sectionTitles = ['Actions', 'Comédies', 'Drames', 'Sci-Fi', 'Documentaires', 'Classiques'];
+                // Generic titles to avoid mismatching content
+                const sectionTitles = [
+                    'Notre sélection pour vous', 
+                    'Les plus gros succès', 
+                    'Pépites à découvrir', 
+                    'Tendances internationales', 
+                    'À voir et à revoir', 
+                    'Films primés', 
+                    'Adorés par la critique',
+                    'Suspense et frissons',
+                    'Émotions fortes',
+                    'Voyage et évasion'
+                ];
                 let sectionIndex = 0;
 
                 while (currentMovieDataIndex < moviesData.length) {
@@ -1405,7 +1420,7 @@
                     // Create section
                     const section = document.createElement('div');
                     section.className = 'section';
-                    const title = sectionTitles[sectionIndex] || `Catégorie ${sectionIndex + 4}`;
+                    const title = sectionTitles[sectionIndex] || `Sélection ${sectionIndex + 4}`;
                     const carouselId = `carousel${sectionIndex + 4}`;
                     
                     section.innerHTML = `
@@ -1449,10 +1464,7 @@
             filteredMovies.forEach(item => {
                 const { movieData, apiData } = item;
                 const card = createCard(movieData, apiData);
-                // Force mobile style for search results or keep grid style
-                card.classList.add('search-card'); // You might need to adjust createCard to return specific class or style
-                // Actually createCard returns a div with class 'card'. 
-                // Let's just append it. The grid CSS handles the layout.
+                card.classList.add('search-card'); 
                 resultsGrid.appendChild(card);
             });
         }
