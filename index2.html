@@ -407,6 +407,14 @@
             flex: 1;
         }
 
+        .card-preview-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+        }
+
         .card-preview-buttons {
             display: flex;
             gap: 8px;
@@ -466,7 +474,7 @@
         }
 
         .card-title {
-            display: none; /* Hide titles everywhere */
+            display: none; /* Hide titles everywhere initially */
         }
 
         .loading {
@@ -891,6 +899,10 @@
             .card-title {
                 display: none; /* Hide title on mobile */
             }
+            
+            .card-preview-title {
+                display: none; /* Hide preview title on mobile just in case */
+            }
 
             /* Bottom Nav */
             .bottom-nav {
@@ -1152,8 +1164,16 @@
             try {
                 const response = await fetch('movies.json');
                 moviesData = await response.json();
+                shuffleArray(moviesData); // Shuffle the movies randomly
             } catch (error) {
                 console.error('Erreur lors du chargement du fichier JSON:', error);
+            }
+        }
+        
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
 
@@ -1291,6 +1311,7 @@
                 <div class="card-preview">
                     <img class="card-preview-image" src="${imgUrl}" alt="${movieTitle}">
                     <div class="card-preview-content">
+                        <div class="card-preview-title">${movieTitle}</div>
                         <div class="card-preview-buttons">
                             <button class="card-preview-btn play" data-action="play">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#000"><path d="M8 5v14l11-7z"/></svg>
