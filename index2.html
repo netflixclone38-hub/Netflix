@@ -227,20 +227,16 @@
             height: 100%;
             z-index: 0;
             overflow: hidden;
-            pointer-events: none;
         }
 
         .hero-video-container iframe {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100vw;
-            height: 56.25vw; /* Given a 16:9 aspect ratio, 100vw width means 56.25vw height */
-            min-height: 100vh;
-            min-width: 177.77vh; /* Given a 16:9 aspect ratio, 100vh height means 177.77vh width */
-            transform: translate(-50%, -50%) scale(1.3); /* Scale up to ensure coverage */
-            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             border: none;
+            /* Scale iframe to avoid black bars if aspect ratio differs */
+            transform: scale(1.3); 
+            pointer-events: none; /* Disable interaction so buttons work */
         }
         
         .hero-mute-btn {
@@ -346,16 +342,8 @@
             z-index: 10000;
         }
 
-        /* 
-           Ajustement de l'espace.
-           Remonter d'environ 3cm (approx 115px).
-           On utilise margin-top négatif pour tirer la section vers le haut
-           dans la zone de recouvrement du hero.
-        */
-        .hero + .section {
-            margin-top: -115px;
-            padding-top: 0;
-        }
+        /* Suppression de l'ajustement spécifique pour revenir à l'état précédent */
+        /* .hero + .section { ... } supprimé */
 
         .section-title {
             font-size: 1.4rem;
@@ -1540,13 +1528,10 @@
                     const match = randomMovie.iframe.match(/src="([^"]+)"/);
                     if (match && match[1]) {
                         let src = match[1];
-                        // Ajout paramètres YouTube/Embed pour autoplay et mute
-                        // On force autoplay=1. mute=0 si activé (défaut false dans code, true dans UI pour start)
-                        // Attention: Autoplay avec son est bloqué par les navigateurs. 
-                        // On tente mute=0, si ça bloque, l'utilisateur a le bouton.
+                        // Ajout paramètres YouTube/Embed pour autoplay, mute et start=300 (5min)
                         const separator = src.includes('?') ? '&' : '?';
                         // astuce: controls=0, showinfo=0, loop=1, playlist pour boucler
-                        src += `${separator}autoplay=1&mute=${heroIsMuted ? '1' : '0'}&controls=0&showinfo=0&rel=0&loop=1`;
+                        src += `${separator}autoplay=1&mute=${heroIsMuted ? '1' : '0'}&controls=0&showinfo=0&rel=0&loop=1&start=300`;
                         
                         // Si c'est YouTube, il faut playlist=ID pour que loop fonctionne
                         const ytMatch = src.match(/embed\/([a-zA-Z0-9_-]+)/);
@@ -1563,7 +1548,11 @@
             }
             
             // Setup mute button
-            document.getElementById('heroMuteBtn').addEventListener('click', toggleHeroMute);
+            const muteBtn = document.getElementById('heroMuteBtn');
+            // Remove previous event listeners to avoid duplicates if re-called (though loadHeroContent called once)
+            const newMuteBtn = muteBtn.cloneNode(true);
+            muteBtn.parentNode.replaceChild(newMuteBtn, muteBtn);
+            newMuteBtn.addEventListener('click', toggleHeroMute);
         }
 
         function createCard(movieData, apiData) {
