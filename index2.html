@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -96,8 +97,52 @@
             gap: 25px;
         }
 
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #fff;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            overflow: hidden;
+            width: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .search-box.active {
+            width: 250px;
+            opacity: 1;
+            padding: 5px 10px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            padding: 5px;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
         .search-icon, .notification-icon, .profile {
             cursor: pointer;
+            z-index: 11; /* Above search box */
         }
 
         .search-icon svg, .notification-icon svg {
@@ -323,10 +368,6 @@
                 position: relative;
                 overflow: visible;
             }
-
-            .card.show-preview .card-title {
-                display: none;
-            }
         }
 
         .card-preview {
@@ -425,15 +466,7 @@
         }
 
         .card-title {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px 10px 10px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 0 0 6px 6px;
+            display: none; /* Hide titles everywhere */
         }
 
         .loading {
@@ -856,7 +889,7 @@
             }
 
             .card-title {
-                display: none; /* Hide title on mobile as requested */
+                display: none; /* Hide title on mobile */
             }
 
             /* Bottom Nav */
@@ -932,8 +965,13 @@
                 <a>Ma liste</a>
             </div>
             <div class="nav-right">
-                <div class="search-icon" id="searchIcon">
-                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <div class="search-container">
+                    <div class="search-box" id="searchBox">
+                        <input type="text" id="searchInput" placeholder="Titres, personnes, genres">
+                    </div>
+                    <div class="search-icon" id="searchIcon">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    </div>
                 </div>
                 <div class="notification-icon">
                     <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
@@ -1099,6 +1137,11 @@
         let currentHeroApiData = null;
         let allMoviesWithApiData = [];
         let myList = [];
+        
+        // Track displayed movies to prevent duplicates
+        const renderedMovieIds = new Set();
+        let currentMovieDataIndex = 0;
+
         const MOVIES_PER_ROW = 6;
 
         function isMobileDevice() {
@@ -1146,7 +1189,6 @@
         function openVideoModal(movieData, apiMovieData) {
             const modal = document.getElementById('videoModal');
             const iframeContainer = document.getElementById('iframeContainer');
-            // Restored logic: Use iframe from movieData (JSON)
             iframeContainer.innerHTML = movieData.iframe || '<p style="color: #fff; text-align: center; padding: 50px;">Vidéo non disponible</p>';
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
@@ -1205,7 +1247,6 @@
 
         async function loadHeroContent() {
             if (moviesData.length === 0) return;
-            // Restore logic: Pick random movie from JSON, search TMDB for details
             const randomMovie = moviesData[Math.floor(Math.random() * moviesData.length)];
             currentHeroMovie = randomMovie;
             const movie = await searchMovie(randomMovie.title);
@@ -1220,7 +1261,6 @@
                 }
                 document.getElementById('heroDescription').textContent = description;
                 
-                // Use backdrop for hero video background
                 if (movie.backdrop_path) {
                     const heroVideo = document.getElementById('heroVideo');
                     heroVideo.outerHTML = `<div class="hero-video" style="background-image: url('${API_CONFIG.backdropBaseUrl}${movie.backdrop_path}'); background-size: cover; background-position: center;"></div>`;
@@ -1234,7 +1274,6 @@
             
             const movieTitle = apiData.title || apiData.name;
             
-            // LOGIC FOR IMAGE: Mobile = Poster, Desktop = Backdrop
             let imgPath;
             if (isMobileDevice()) {
                 imgPath = apiData.poster_path ? apiData.poster_path : apiData.backdrop_path;
@@ -1267,7 +1306,6 @@
                 </div>
             `;
             
-            // Hover events (desktop only via CSS pointer-events but JS helpful for classes)
             let hoverTimer = null;
             card.addEventListener('mouseenter', function() {
                 if (!isMobileDevice()) {
@@ -1299,48 +1337,55 @@
             return card;
         }
 
-        async function loadCarousel(carouselId, startIndex = 0, count = MOVIES_PER_ROW) {
+        // Updated Load Carousel to prevent duplicates
+        async function loadCarousel(carouselId, count = MOVIES_PER_ROW) {
             const container = document.getElementById(carouselId);
             if (!container) return;
             
             container.innerHTML = '';
             let loadedMovies = 0;
-            let currentIndex = startIndex;
             
-            while (loadedMovies < count && currentIndex < moviesData.length) {
-                const movieData = moviesData[currentIndex];
+            // Loop until we have enough movies or we run out of source data
+            while (loadedMovies < count && currentMovieDataIndex < moviesData.length) {
+                const movieData = moviesData[currentMovieDataIndex];
+                
+                // Only search and render if we haven't seen this movieData (assumes JSON is somewhat clean, but let's rely on TMDB ID for true duplicate check)
                 const movie = await searchMovie(movieData.title);
                 
-                if (movie) {
+                if (movie && !renderedMovieIds.has(movie.id)) {
+                    renderedMovieIds.add(movie.id);
                     allMoviesWithApiData.push({ movieData, apiData: movie });
                     const card = createCard(movieData, movie);
                     container.appendChild(card);
                     loadedMovies++;
                 }
-                currentIndex++;
+                
+                // Move to next movie in source list regardless of whether it was added (to avoid infinite loops on duplicates)
+                currentMovieDataIndex++;
             }
         }
 
         async function loadAllMovies() {
-            await loadCarousel('carousel1', 0, MOVIES_PER_ROW);
-            await loadCarousel('carousel2', MOVIES_PER_ROW, MOVIES_PER_ROW);
-            await loadCarousel('carousel3', MOVIES_PER_ROW * 2, MOVIES_PER_ROW);
+            // Sequential loading ensures no index math errors
+            await loadCarousel('carousel1', MOVIES_PER_ROW);
+            await loadCarousel('carousel2', MOVIES_PER_ROW);
+            await loadCarousel('carousel3', MOVIES_PER_ROW);
 
-            const moviesLoaded = MOVIES_PER_ROW * 3;
-            const remainingMovies = moviesData.length - moviesLoaded;
-
-            if (remainingMovies > 0) {
+            // Dynamically load remaining movies in new sections if any left
+            if (currentMovieDataIndex < moviesData.length) {
                 const dynamicSections = document.getElementById('dynamicSections');
-                const numberOfRows = Math.ceil(remainingMovies / MOVIES_PER_ROW);
                 
-                // Demo titles
-                const sectionTitles = ['Tendances', 'Nouveautés', 'Action', 'Comédie'];
+                // Demo titles for extra sections
+                const sectionTitles = ['Actions', 'Comédies', 'Drames', 'Sci-Fi', 'Documentaires', 'Classiques'];
+                let sectionIndex = 0;
 
-                for (let i = 0; i < numberOfRows; i++) {
+                while (currentMovieDataIndex < moviesData.length) {
+                    // Check if we have processed all movies, though the loop condition handles it.
+                    // Create section
                     const section = document.createElement('div');
                     section.className = 'section';
-                    const title = sectionTitles[i] || `Catégorie ${i + 1}`;
-                    const carouselId = `carousel${i + 4}`;
+                    const title = sectionTitles[sectionIndex] || `Catégorie ${sectionIndex + 4}`;
+                    const carouselId = `carousel${sectionIndex + 4}`;
                     
                     section.innerHTML = `
                         <h2 class="section-title">${title}</h2>
@@ -1351,10 +1396,44 @@
                         </div>
                     `;
                     dynamicSections.appendChild(section);
-                    const startIndex = moviesLoaded + (i * MOVIES_PER_ROW);
-                    await loadCarousel(carouselId, startIndex, MOVIES_PER_ROW);
+                    
+                    // Load into this new carousel
+                    await loadCarousel(carouselId, MOVIES_PER_ROW);
+                    sectionIndex++;
+                    
+                    // Safety break to prevent infinite sections if API acts up
+                    if (sectionIndex > 20) break;
                 }
             }
+        }
+        
+        function displaySearchResults(searchTerm) {
+            const resultsGrid = document.getElementById('searchResultsGrid');
+            const resultsTitle = document.getElementById('searchResultsTitle');
+            
+            resultsGrid.innerHTML = '';
+            
+            const filteredMovies = allMoviesWithApiData.filter(item => {
+                const title = (item.apiData.title || item.apiData.name || '').toLowerCase();
+                return title.includes(searchTerm.toLowerCase());
+            });
+
+            resultsTitle.textContent = `Résultats pour "${searchTerm}"`;
+
+            if (filteredMovies.length === 0) {
+                resultsGrid.innerHTML = '<p style="color: #fff; font-size: 1.2rem; padding: 50px; text-align: center;">Aucun résultat trouvé</p>';
+                return;
+            }
+
+            filteredMovies.forEach(item => {
+                const { movieData, apiData } = item;
+                const card = createCard(movieData, apiData);
+                // Force mobile style for search results or keep grid style
+                card.classList.add('search-card'); // You might need to adjust createCard to return specific class or style
+                // Actually createCard returns a div with class 'card'. 
+                // Let's just append it. The grid CSS handles the layout.
+                resultsGrid.appendChild(card);
+            });
         }
 
         function navigateToHome() {
@@ -1375,15 +1454,41 @@
 
         // Search Logic
         const searchIcon = document.getElementById('searchIcon');
+        const searchBox = document.getElementById('searchBox');
+        const searchInput = document.getElementById('searchInput');
         const searchResultsPage = document.getElementById('searchResultsPage');
         const mainPage = document.getElementById('mainPage');
 
-        searchIcon.addEventListener('click', () => {
-            searchResultsPage.classList.toggle('show');
-            if(searchResultsPage.classList.contains('show')) {
+        searchIcon.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent document click from closing immediately
+            searchBox.classList.toggle('active');
+            if (searchBox.classList.contains('active')) {
+                searchInput.focus();
+            }
+        });
+        
+        // Close search if clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchIcon.contains(e.target) && !searchBox.contains(e.target)) {
+                if (searchInput.value === '') {
+                    searchBox.classList.remove('active');
+                    if (searchResultsPage.classList.contains('show')) {
+                        searchResultsPage.classList.remove('show');
+                        mainPage.style.display = 'block';
+                    }
+                }
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value;
+            
+            if (searchTerm.length > 0) {
                 mainPage.style.display = 'none';
-                displaySearchResults(''); // Show some default or wait for input
+                searchResultsPage.classList.add('show');
+                displaySearchResults(searchTerm);
             } else {
+                searchResultsPage.classList.remove('show');
                 mainPage.style.display = 'block';
             }
         });
